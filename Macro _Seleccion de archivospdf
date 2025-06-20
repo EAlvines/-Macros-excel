@@ -1,0 +1,44 @@
+'MACRO PARA QUE SELECCIONE SOLO ALGUNO ARCHIVOS PDF DESDE UNA LISTA CON LOS NOMBRES DE LOS ARCHIVOS PDF A SELECCIONAR.
+Sub CopiarArchivosPDFDesdeListado()
+    Dim ws As Worksheet
+    Dim carpetaOrigen As String
+    Dim carpetaDestino As String
+    Dim archivo As String
+    Dim fila As Integer
+    
+    ' Especificar la hoja de cálculo que contiene el listado
+    Set ws = ThisWorkbook.Sheets("Hoja1") ' Cambia el nombre de la hoja si es necesario
+    
+    ' Especificar las carpetas de origen y destino
+    carpetaOrigen = "C:\Ruta\De\Carpeta\Origen\"
+    carpetaDestino = "C:\Ruta\De\Carpeta\Destino\"
+    
+    ' Iniciar en la fila 1 (cambiar si es necesario)
+    fila = 1
+    
+    ' Recorrer el listado de archivos PDF en la columna A
+    Do While ws.Cells(fila, 1).Value <> ""
+        archivo = ws.Cells(fila, 1).Value
+        If Dir(carpetaOrigen & archivo) <> "" Then
+            FileCopy carpetaOrigen & archivo, carpetaDestino & archivo
+        Else
+            MsgBox "Archivo no encontrado: " & archivo
+        End If
+        fila = fila + 1
+    Loop
+End Sub
+CODIGO EN CMD: 
+@echo off
+set "sourceFolder=C:\Ruta\De\Carpeta\Origen"
+set "destinationFolder=C:\Ruta\De\Carpeta\Destino"
+set "fileList=C:\Ruta\De\Archivo\listado.txt"
+
+for /f "delims=" %%a in (%fileList%) do (
+    if exist "%sourceFolder%\%%a" (
+        copy "%sourceFolder%\%%a" "%destinationFolder%"
+    ) else (
+        echo Archivo no encontrado: %%a
+    )
+)
+
+'IMPORTANTE: Donde se describa la lista sea Excel o Archivo de texto, el nombre debe tener la extensión .pdf
